@@ -1,0 +1,47 @@
+$header-height: 56px;
+
+.header {
+  position: relative;
+  z-index: 8;
+}
+
+.header-view {
+  height: $header-height;
+  position: fixed;
+}
+
+.heading {
+  margin-left: 16px;
+}
+
+.body {
+  padding-top: $header-height;
+  box-sizing: border-box;
+}
+
+.drawer-container,
+.main {
+  height: 100%;
+}
+
+.drawer-container {
+  background-color: unset;
+  color: unset;
+}
+
+.main {
+  position: relative;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  padding-top: $header-height;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.drawer-list {
+  padding: 0;
+}
