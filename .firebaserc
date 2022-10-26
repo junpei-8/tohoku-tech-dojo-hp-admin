@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tohoku-tech-dojo-hp": {
+      "hosting": {
+        "tohoku-tech-dojo-hp-admin": [
+          "tohoku-tech-dojo-hp-admin"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tohoku-tech-dojo-hp"
+  }
+}

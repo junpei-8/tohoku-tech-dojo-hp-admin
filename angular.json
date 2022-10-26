@@ -102,6 +102,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "tohoku-tech-dojo-hp-admin:build:production",
+            "firebaseProject": "tohoku-tech-dojo-hp",
+            "firebaseHostingSite": "tohoku-tech-dojo-hp-admin"
+          }
         }
       }
     }
