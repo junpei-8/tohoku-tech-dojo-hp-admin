@@ -2,8 +2,18 @@
 
 - URL： https://tohoku-tech-dojo-hp-admin.web.app
 
-## Rust 環境のセットアップ
+## Rust（WASM）
+
+＊ Makefile にコマンドはまとめたい
+
+### セットアップ
 
 ```
 rustup target add wasm32-unknown-unknown
+```
+
+### ビルド
+
+```
+wasm-pack build --release --target no-modules
 ```
