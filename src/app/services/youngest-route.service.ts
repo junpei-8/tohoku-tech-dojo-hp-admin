@@ -2,25 +2,31 @@ import { inject, InjectionToken } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ROUTE_CHANGES } from './route-changes.service';
 
-export interface YoungestRoute {
+interface MutableYoungestRoute {
   ref: ActivatedRoute;
 }
-export const YOUNGEST_ROUTE = new InjectionToken('It youngest route', {
-  providedIn: 'root',
-  factory: () => {
-    const activatedRoute = inject(ActivatedRoute);
-    const youngestRoute = { ref: activatedRoute } as YoungestRoute;
 
-    inject(ROUTE_CHANGES).subscribe(() => {
-      let route: ActivatedRoute = activatedRoute;
+export type YoungestRoute = Readonly<MutableYoungestRoute>;
 
-      while (route.firstChild) {
-        route = route.firstChild;
-      }
+export const YOUNGEST_ROUTE = new InjectionToken<YoungestRoute>(
+  'It youngest route',
+  {
+    providedIn: 'root',
+    factory: () => {
+      const activatedRoute = inject(ActivatedRoute);
+      const youngestRoute: MutableYoungestRoute = { ref: activatedRoute };
 
-      youngestRoute.ref = route;
-    });
+      inject(ROUTE_CHANGES).subscribe(() => {
+        let route: ActivatedRoute = activatedRoute;
 
-    return youngestRoute;
+        while (route.firstChild) {
+          route = route.firstChild;
+        }
+
+        youngestRoute.ref = route;
+      });
+
+      return youngestRoute;
+    },
   },
-});
+);

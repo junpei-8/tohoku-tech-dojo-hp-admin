@@ -7,12 +7,39 @@
     >
       <mat-icon>menu</mat-icon>
     </button>
-    <span class="heading">東北TECH道場ホームページ管理画面</span>
-    <span style="flex: 1"></span>
+    <h1 class="heading">東北TECH道場 ホームページ管理画面</h1>
+    <span class="header-spacer"></span>
+    <button
+      class="header-user-button"
+      mat-icon-button
+      aria-label="User settings"
+      [matMenuTriggerFor]="menu"
+    >
+      <img
+        *ngIf="currentUser"
+        class="header-user-icon"
+        [src]="currentUser.photoURL"
+        alt="Authed user icon"
+      />
+
+      <mat-icon *ngIf="currentUser === null">person</mat-icon>
+
+      <mat-spinner
+        *ngIf="currentUser === undefined"
+        color="accent"
+        diameter="24"
+      ></mat-spinner>
+    </button>
+
+    <mat-menu #menu="matMenu" class="header-user-menu" style="max-height: 0">
+      <button mat-menu-item (click)="toggleAuth()">
+        {{ currentUser ? 'ログアウト' : 'ログイン' }}
+      </button>
+    </mat-menu>
   </mat-toolbar>
 </header>
 
-<mat-drawer-container class="body">
+<mat-drawer-container class="body" hasBackdrop="false">
   <mat-drawer class="drawer" #drawer mode="side" [opened]="hasOpenedDrawer">
     <mat-nav-list class="drawer-list">
       <a mat-list-item routerLink="/" routerLinkActive="active">
@@ -31,8 +58,14 @@
   </mat-drawer>
 
   <main class="main">
-    <router-outlet></router-outlet>
+    <ng-template [ngIf]="view.loading" [ngIfElse]="routerOutlet">
+      <div class="loading-spinner">
+        <mat-spinner color="accent"></mat-spinner>
+      </div>
+    </ng-template>
+
+    <ng-template #routerOutlet>
+      <router-outlet></router-outlet>
+    </ng-template>
   </main>
 </mat-drawer-container>
-
-<footer></footer>

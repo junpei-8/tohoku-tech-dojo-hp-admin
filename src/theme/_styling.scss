@@ -1,0 +1,16 @@
+@use '@angular/material' as mat;
+@use './theming' as *;
+@use './typography' as *;
+
+@include mat.core($typography);
+@include mat.all-component-themes($theme); // <-- とりあえず全て
+
+.mat-button-base .mat-button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-accent-color {
+  color: $accent-color;
+}

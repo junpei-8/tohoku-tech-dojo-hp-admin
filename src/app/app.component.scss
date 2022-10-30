@@ -1,3 +1,5 @@
+@use '../theme';
+
 $header-height: 56px;
 
 .header {
@@ -8,15 +10,40 @@ $header-height: 56px;
 .header-view {
   height: $header-height;
   position: fixed;
+  @include theme.elevation(4);
 }
 
 .heading {
+  font-size: 18px;
+  font-weight: 500;
   margin-left: 16px;
+}
+
+.header-spacer {
+  flex: 1;
+}
+
+.header-user-button {
+  overflow: hidden;
+}
+::ng-deep {
+  .header-user-menu {
+    min-height: 0 !important;
+    .mat-menu-content {
+      padding: 0 !important;
+    }
+  }
+}
+
+.header-user-icon {
+  width: 40px;
+  height: 40px;
 }
 
 .body {
   padding-top: $header-height;
   box-sizing: border-box;
+  height: 100%;
 }
 
 .drawer-container,
@@ -29,10 +56,6 @@ $header-height: 56px;
   color: unset;
 }
 
-.main {
-  position: relative;
-}
-
 .drawer {
   position: fixed;
   top: 0;
@@ -40,8 +63,32 @@ $header-height: 56px;
   height: 100%;
   padding-top: $header-height;
   box-sizing: border-box;
+  background-color: theme.get-color-from-palette(theme.$primary, 100);
+  border: none;
+  box-shadow: none;
   font-size: 14px;
 }
+:host-context {
+  .drawer {
+    &.mat-drawer-opened {
+      @include theme.elevation(4);
+    }
+  }
+}
+
 .drawer-list {
   padding: 0;
+}
+
+.main {
+  position: relative;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 48px;
 }

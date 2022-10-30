@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Route as BaseRoute } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 import { HomePageComponent } from './pages/home/home.component';
 import { MetaData } from './services/meta.service';
 
 export interface RouteData {
   key: string;
-  meta: MetaData;
+  meta?: MetaData;
 }
 
 export interface Route extends BaseRoute {
@@ -28,6 +29,7 @@ const routes: Routes = [
         desc: `${DESC_SUFFIX}`,
       },
     },
+    canActivate: [AuthGuard],
   },
   {
     path: 'blog',
@@ -42,9 +44,10 @@ const routes: Routes = [
         desc: `${DESC_SUFFIX}`,
       },
     },
+    canActivate: [AuthGuard],
   },
   {
-    path: 'blog/editor',
+    path: 'blog/editor/:id',
     loadComponent: () =>
       import('./pages/blog/editor/editor.component').then(
         (m) => m.BlogEditorPageComponent,
@@ -56,6 +59,22 @@ const routes: Routes = [
         desc: `${DESC_SUFFIX}`,
       },
     },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'blog/editor',
+    loadComponent: () =>
+      import('./pages/blog/editor/editor.component').then(
+        (m) => m.BlogEditorPageComponent,
+      ),
+    data: {
+      key: 'blog/editor',
+      meta: {
+        title: `ブログ新規作成 | ${TITLE_SUFFIX}`,
+        desc: `${DESC_SUFFIX}`,
+      },
+    },
+    canActivate: [AuthGuard],
   },
   {
     path: 'news',
@@ -70,6 +89,7 @@ const routes: Routes = [
         desc: `${DESC_SUFFIX}`,
       },
     },
+    canActivate: [AuthGuard],
   },
   {
     path: 'news/editor',
@@ -84,11 +104,27 @@ const routes: Routes = [
         desc: `${DESC_SUFFIX}`,
       },
     },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'sign-in',
+    loadComponent: () =>
+      import('./pages/sign-in/sign-in.component').then(
+        (m) => m.SignInPageComponent,
+      ),
+    data: {
+      key: 'sign-in',
+      meta: {
+        title: `サインイン | ${TITLE_SUFFIX}`,
+        desc: `${DESC_SUFFIX}`,
+      },
+    },
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
+  providers: [AuthGuard],
 })
 export class AppRoutingModule {}
