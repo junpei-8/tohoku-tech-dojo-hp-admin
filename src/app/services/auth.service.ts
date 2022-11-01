@@ -5,13 +5,12 @@ import {
   signOut,
   User,
 } from 'firebase/auth';
-import { doc, Firestore, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore/lite';
 import { auth, AdminsDoc } from '@/app/firebase';
+import { firestore } from '../firebase';
 
 @Injectable({ providedIn: 'root' })
-export class Authentication {
-  constructor(private _firestore: Firestore) {}
-
+export class Auth {
   async signInWithGoogle() {
     try {
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
@@ -41,7 +40,7 @@ export class Authentication {
   async isAdminUser(email: string | null) {
     if (!email) return false;
 
-    const docRef = doc(this._firestore, 'admins', email);
+    const docRef = doc(firestore, 'admins', email);
 
     const docSnap = await getDoc(docRef);
 
@@ -49,7 +48,7 @@ export class Authentication {
   }
 
   async setUserDoc(email: string, userDoc: AdminsDoc) {
-    const docRef = doc(this._firestore, 'admins', email);
+    const docRef = doc(firestore, 'admins', email);
     await setDoc(docRef, userDoc);
   }
 

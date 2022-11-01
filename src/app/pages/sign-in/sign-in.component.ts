@@ -5,8 +5,8 @@ import {
   Component,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { RootView } from 'src/app/root-view.service';
-import { Authentication } from 'src/app/services/authentication.service';
+import { RootView } from '@/app/root-view.service';
+import { Auth } from '@/app/services/auth.service';
 
 @Component({
   standalone: true,
@@ -20,7 +20,7 @@ export class SignInPageComponent {
   errorMessage: string | null = null;
 
   constructor(
-    private _auth: Authentication,
+    private _auth: Auth,
     private _rootView: RootView,
     private _changeDetectorRef: ChangeDetectorRef,
     private _location: Location,

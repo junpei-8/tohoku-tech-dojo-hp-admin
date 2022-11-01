@@ -32,58 +32,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'blog',
-    loadComponent: () =>
-      import('./pages/blog/list/list.component').then(
-        (m) => m.BlogListPageComponent,
-      ),
-    data: {
-      key: 'blog/list',
-      meta: {
-        title: `ブログ一覧 | ${TITLE_SUFFIX}`,
-        desc: `${DESC_SUFFIX}`,
-      },
-    },
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'blog/editor/:id',
-    loadComponent: () =>
-      import('./pages/blog/editor/editor.component').then(
-        (m) => m.BlogEditorPageComponent,
-      ),
-    data: {
-      key: 'blog/editor',
-      meta: {
-        title: `ブログ編集 | ${TITLE_SUFFIX}`,
-        desc: `${DESC_SUFFIX}`,
-      },
-    },
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'blog/editor',
-    loadComponent: () =>
-      import('./pages/blog/editor/editor.component').then(
-        (m) => m.BlogEditorPageComponent,
-      ),
-    data: {
-      key: 'blog/editor',
-      meta: {
-        title: `ブログ新規作成 | ${TITLE_SUFFIX}`,
-        desc: `${DESC_SUFFIX}`,
-      },
-    },
-    canActivate: [AuthGuard],
-  },
-  {
     path: 'news',
     loadComponent: () =>
       import('./pages/news/list/list.component').then(
         (m) => m.NewsListPageComponent,
       ),
     data: {
-      key: 'news/list',
+      key: 'blog/list',
       meta: {
         title: `お知らせ一覧 | ${TITLE_SUFFIX}`,
         desc: `${DESC_SUFFIX}`,
@@ -92,15 +47,30 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'news/editor',
+    path: 'news/editor/:id',
     loadComponent: () =>
-      import('./pages/news/editor/editor.component').then(
+      import('./pages/news/editor/news.component').then(
         (m) => m.NewsEditorPageComponent,
       ),
     data: {
       key: 'news/editor',
       meta: {
         title: `お知らせ編集 | ${TITLE_SUFFIX}`,
+        desc: `${DESC_SUFFIX}`,
+      },
+    },
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'news/editor',
+    loadComponent: () =>
+      import('./pages/news/editor/news.component').then(
+        (m) => m.NewsEditorPageComponent,
+      ),
+    data: {
+      key: 'blog/editor',
+      meta: {
+        title: `お知らせ新規作成 | ${TITLE_SUFFIX}`,
         desc: `${DESC_SUFFIX}`,
       },
     },

@@ -18,13 +18,15 @@ import {
   Md2HtmlConverterRequest,
   Md2HtmlConverterResponse,
   createMd2HtmlConverter,
+  createMd2HtmlConverterDataset,
+  Md2HtmlConverterData,
 } from './md2html-converter';
 
 @Component({
   standalone: true,
-  selector: 'blog-editor-page',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss'],
+  selector: 'news-editor-page',
+  templateUrl: './news.component.html',
+  styleUrls: ['./news.component.scss'],
   imports: [
     CommonModule,
     FormsModule,
@@ -39,7 +41,7 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BlogEditorPageComponent {
+export class NewsEditorPageComponent {
   title = '';
 
   tags: string[] = [];
@@ -63,19 +65,16 @@ export class BlogEditorPageComponent {
 
   contentViewMode: 'both' | 'editor' | 'previewer' = 'both';
 
-  MD2HTML_CONVERTER_DATASET = [
-    {
-      key: 'pulldownCmark',
-      label: 'Pulldown Cmark (Rust)',
-    },
-  ] as const;
-  selectedMd2HtmlConverterIndex = 0;
-  md2HtmlConverter: Worker | null = null;
+  md2HtmlConverterDataset = createMd2HtmlConverterDataset();
+  selectedMd2HtmlConverterIndex: number;
+  selectedMd2HtmlConverter: Md2HtmlConverterData;
 
   constructor(
     private _domSanitizer: DomSanitizer,
     private _changeDetectionRef: ChangeDetectorRef,
-  ) {}
+  ) {
+    this.selectMd2HtmlConverter(0);
+  }
 
   isDisabledAddTag(inputElement: HTMLInputElement) {
     const tags = this.tags;
@@ -109,12 +108,10 @@ export class BlogEditorPageComponent {
   }
 
   private _initMd2HtmlConverter() {
-    console.log('initMd2HtmlConverter');
+    const data =
+      this.md2HtmlConverterDataset[this.selectedMd2HtmlConverterIndex];
 
-    const key =
-      this.MD2HTML_CONVERTER_DATASET[this.selectedMd2HtmlConverterIndex].key;
-
-    const worker = createMd2HtmlConverter[key]();
+    const worker = (data.worker = createMd2HtmlConverter[data.key]());
 
     worker.onmessage = ({ data }: Md2HtmlConverterResponse) => {
       this._changeDetectionRef.markForCheck();
@@ -124,12 +121,23 @@ export class BlogEditorPageComponent {
     return worker;
   }
 
-  convertMd2Html() {
-    console.log('input', this.content);
+  selectMd2HtmlConverter(index: number) {
+    this.selectedMd2HtmlConverterIndex = index;
+    this.selectedMd2HtmlConverter = this.md2HtmlConverterDataset[index];
+  }
 
-    const worker = (this.md2HtmlConverter ||= this._initMd2HtmlConverter());
+  convertMdContent2Html(event: Event) {
+    const worker = (this.selectedMd2HtmlConverter.worker ||=
+      this._initMd2HtmlConverter());
 
-    const request: Md2HtmlConverterRequest['data'] = this.content;
+    // 型キャスト
+    const e = event as InputEvent;
+
+    // 日本語入力中など input の値が確定していない場合、入力中のデータを取得し付け加える
+    const inputtingContent = e.isComposing ? e.data || '' : '';
+
+    const request: Md2HtmlConverterRequest['data'] =
+      this.content + inputtingContent;
 
     worker.postMessage(request);
   }

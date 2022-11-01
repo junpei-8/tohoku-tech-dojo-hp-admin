@@ -2,7 +2,7 @@ use pulldown_cmark::{html, Options, Parser};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn convert_markdown_to_html(markdown: &str) -> String {
+pub fn md2html(markdown: &str) -> String {
     let markdown_input = markdown;
 
     let mut options = Options::empty();
