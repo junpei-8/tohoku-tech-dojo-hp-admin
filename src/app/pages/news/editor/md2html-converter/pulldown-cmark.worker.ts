@@ -16,5 +16,5 @@ addEventListener('message', async ({ data }: Md2HtmlConverterRequest) => {
     hasInitialized = true;
   }
 
-  postMessage(convert_markdown_to_html(data));
+  postMessage(convert_markdown_to_html(data.trim()));
 });

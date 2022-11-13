@@ -6,5 +6,5 @@ importScripts('wasm/md2html-converter/markdown-wasm/pkg/markdown.js'); // @ts-ex
 const { parse } = self['markdown-worker'];
 
 addEventListener('message', ({ data }: Md2HtmlConverterRequest) =>
-  postMessage(parse(data)),
+  postMessage(parse(data.trim())),
 );
