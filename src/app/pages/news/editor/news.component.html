@@ -1,10 +1,15 @@
 <mat-form-field
-  class="form-field"
+  class="form-field no-hint"
   appearance="outline"
   aria-label="タイトルを入力"
 >
   <mat-label>タイトル</mat-label>
-  <input #titleInput matInput autocomplete="off" [(ngModel)]="title" />
+  <input
+    matInput
+    autocomplete="off"
+    aria-label="タイトル"
+    [(ngModel)]="title"
+  />
 </mat-form-field>
 
 <form (submit)="addTag(tagInput, $event)">
@@ -19,6 +24,7 @@
       matInput
       autocomplete="off"
       type="text"
+      aria-label="タグ"
       [disabled]="tags.length >= this.MAX_TAG_LENGTH"
     />
     <button
@@ -39,7 +45,7 @@
   <mat-button-toggle-group
     class="toggle-buttons"
     name="editor-navigation-content-toggle"
-    aria-label="Editor navigation content toggle"
+    aria-label="エディタのナビゲーション切り替えボタン"
     [(value)]="navLeftViewMode"
   >
     <mat-button-toggle value="tags" matTooltip="タグ">
@@ -63,7 +69,7 @@
       </mat-chip>
     </mat-chip-list>
 
-    <div class="nav-settings" *ngIf="navLeftViewMode === 'settings'">
+    <div *ngIf="navLeftViewMode === 'settings'" class="nav-settings">
       <mat-form-field
         appearance="outline"
         class="nav-form-field"
@@ -102,8 +108,8 @@
   <mat-button-toggle-group
     class="toggle-buttons"
     name="editor-view-settings"
-    aria-label="Editor view settings"
-    [(value)]="contentViewMode"
+    aria-label="エディターの設定"
+    [(value)]="contentFormViewMode"
   >
     <mat-button-toggle value="both" matTooltip="エディターとプレビュー">
       <mat-icon>view_column_2</mat-icon>
@@ -125,15 +131,16 @@
   <mat-label class="content-form-field-label">本文（Markdown）</mat-label>
 
   <textarea
-    class="content-textarea"
     *ngIf="
-      contentViewMode === 'both' || contentViewMode === 'editor';
+      contentFormViewMode === 'both' || contentFormViewMode === 'editor';
       else dummyContentTextarea
     "
+    #contentTextarea
+    class="content-textarea"
     matInput
     spellcheck="false"
     autocomplete="off"
-    [(ngModel)]="content"
+    aria-label="本文"
     (input)="convertMdContent2Html($event)"
     [style]="CONTENT_INPUT_STYLES[selectedContentInputStyleIndex]"
   ></textarea>
@@ -143,8 +150,11 @@
   </ng-template>
 
   <div
+    *ngIf="
+      contentFormViewMode === 'both' || contentFormViewMode === 'previewer'
+    "
+    #contentPreviewer
     class="content-previewer markdown-body"
-    *ngIf="contentViewMode === 'both' || contentViewMode === 'previewer'"
     [innerHTML]="contentPreview"
   ></div>
 </mat-form-field>

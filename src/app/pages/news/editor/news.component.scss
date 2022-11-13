@@ -1,6 +1,7 @@
 :host {
   display: flex;
   flex-direction: column;
+  flex-wrap: nowrap;
   height: 100%;
   padding: 16px;
   box-sizing: border-box;
@@ -9,6 +10,11 @@
 .form-field {
   width: 100%;
   margin-bottom: 0;
+}
+.form-field.no-hint::ng-deep {
+  .mat-form-field-wrapper {
+    padding-bottom: 8px;
+  }
 }
 
 .toggle-buttons {
@@ -111,6 +117,7 @@
 
 .content-form-field {
   height: 100%;
+  overflow: hidden;
 }
 .content-form-field::ng-deep {
   .mat-form-field-wrapper {
@@ -141,12 +148,15 @@
   height: 100%;
   overflow-y: scroll;
   margin: 0;
-  padding: 0 12px;
+  padding: 0 12px 64px;
   box-sizing: border-box;
+  background-color: inherit;
 }
 
 .content-textarea {
   resize: none;
   font-size: 16px;
   line-height: 1.6;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }

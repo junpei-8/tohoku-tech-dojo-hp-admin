@@ -3,6 +3,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -63,11 +65,47 @@ export class NewsEditorPageComponent {
   ] as const;
   selectedContentInputStyleIndex = 0;
 
-  contentViewMode: 'both' | 'editor' | 'previewer' = 'both';
-
   md2HtmlConverterDataset = createMd2HtmlConverterDataset();
   selectedMd2HtmlConverterIndex: number;
   selectedMd2HtmlConverter: Md2HtmlConverterData;
+
+  @ViewChild('contentTextarea', { read: ElementRef })
+  private _contentTextareaElementRef: ElementRef<HTMLElement> | null;
+
+  @ViewChild('contentPreviewer', { read: ElementRef })
+  private _contentPreviewerElementRef: ElementRef<HTMLElement> | null;
+
+  private _contentFormLastScrollTop: number | null = null;
+
+  // 表示するモードが変更されたら scroll リスナーを変える
+  private _contentFormViewMode: 'both' | 'editor' | 'previewer';
+  set contentFormViewMode(mode: typeof this._contentFormViewMode) {
+    const currMode = this._contentFormViewMode;
+    if (currMode && (currMode === mode || !mode)) return;
+
+    // 初期は undefined が代入されるので、初期化処理も含める
+    this._contentFormViewMode = mode ||= 'both';
+
+    // DOM のレンダリングが終わってから処理を行う
+    setTimeout(() => {
+      if (mode === 'both' || mode === 'editor') {
+        this.forceListenResonanceScroll(
+          this._contentTextareaElementRef,
+          this._contentPreviewerElementRef,
+        );
+      }
+
+      if (mode === 'both' || mode === 'previewer') {
+        this.forceListenResonanceScroll(
+          this._contentPreviewerElementRef,
+          this._contentTextareaElementRef,
+        );
+      }
+    });
+  }
+  get contentFormViewMode() {
+    return this._contentFormViewMode;
+  }
 
   constructor(
     private _domSanitizer: DomSanitizer,
@@ -127,18 +165,37 @@ export class NewsEditorPageComponent {
   }
 
   convertMdContent2Html(event: Event) {
+    const content = (this.content = (event.target as HTMLInputElement).value);
+
     const worker = (this.selectedMd2HtmlConverter.worker ||=
       this._initMd2HtmlConverter());
 
-    // 型キャスト
-    const e = event as InputEvent;
-
-    // 日本語入力中など input の値が確定していない場合、入力中のデータを取得し付け加える
-    const inputtingContent = e.isComposing ? e.data || '' : '';
-
-    const request: Md2HtmlConverterRequest['data'] =
-      this.content + inputtingContent;
+    const request: Md2HtmlConverterRequest['data'] = content;
 
     worker.postMessage(request);
+  }
+
+  /** スクロールを共有する */
+  resonanceScroll(src: HTMLElement, dest: HTMLElement) {
+    if (src.scrollTop === this._contentFormLastScrollTop) return;
+
+    const ratio = src.scrollTop / (src.scrollHeight - src.clientHeight);
+    dest.scrollTop = (dest.scrollHeight - dest.clientHeight) * ratio;
+    this._contentFormLastScrollTop = dest.scrollTop;
+
+    console.log(src.classList[0]);
+  }
+
+  /** スクロールを共有するリスナーを onscroll に代入する */
+  forceListenResonanceScroll(
+    src: ElementRef<HTMLElement> | null,
+    dest: ElementRef<HTMLElement> | null,
+  ) {
+    if (!src || !dest) return;
+
+    const srcEl = src.nativeElement;
+    const destEl = dest.nativeElement;
+    srcEl.onscroll = () => this.resonanceScroll(srcEl, destEl);
+    srcEl.oninput = () => this.resonanceScroll(srcEl, destEl);
   }
 }
