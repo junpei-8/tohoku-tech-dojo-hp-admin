@@ -20,7 +20,7 @@ const DESC_SUFFIX = '東北TECH道場のホームページの管理画面' as co
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'home',
     component: HomePageComponent,
     data: {
       key: 'home',
@@ -38,7 +38,7 @@ const routes: Routes = [
         (m) => m.NewsListPageComponent,
       ),
     data: {
-      key: 'blog/list',
+      key: 'news/list',
       meta: {
         title: `お知らせ一覧 | ${TITLE_SUFFIX}`,
         desc: `${DESC_SUFFIX}`,
@@ -88,6 +88,13 @@ const routes: Routes = [
         title: `サインイン | ${TITLE_SUFFIX}`,
         desc: `${DESC_SUFFIX}`,
       },
+    },
+  },
+  {
+    path: '**',
+    redirectTo: '/news',
+    data: {
+      key: 'news-redirect',
     },
   },
 ];

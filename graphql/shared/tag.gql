@@ -1,0 +1,5 @@
+extend type Mutation {
+  createTag(input: CreateTagInput!): Tag!
+  createTags(inputs: [CreateTagInput!]!): [Tag!]!
+  deleteTag(id: ID!): String!
+}

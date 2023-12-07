@@ -1,0 +1,5 @@
+extend type Mutation {
+  createNews(input: CreateNewsInput!): News!
+  updateNews(id: ID!, input: UpdateNewsInput!): News!
+  deleteNews(id: ID!): String!
+}

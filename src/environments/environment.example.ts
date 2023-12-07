@@ -7,5 +7,6 @@ export const environment = {
     authDomain: '',
     messagingSenderId: '',
   },
+  apiHost: '',
   production: false,
 };

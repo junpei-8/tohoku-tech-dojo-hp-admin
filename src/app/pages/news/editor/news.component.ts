@@ -14,8 +14,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import apolloClient from '@/apollo';
 import {
   Md2HtmlConverterRequest,
   Md2HtmlConverterResponse,
@@ -23,6 +25,7 @@ import {
   createMd2HtmlConverterDataset,
   Md2HtmlConverterData,
 } from './md2html-converter';
+import { CreateNewsDocument } from './news';
 
 @Component({
   standalone: true,
@@ -40,6 +43,8 @@ import {
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
+    MatButtonModule,
+    MatSnackBarModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -53,6 +58,7 @@ export class NewsEditorPageComponent {
 
   content = '';
   contentPreview: SafeHtml = '';
+  rawContentPreview = '';
 
   CONTENT_INPUT_STYLES = [
     {
@@ -68,6 +74,8 @@ export class NewsEditorPageComponent {
   md2HtmlConverterDataset = createMd2HtmlConverterDataset();
   selectedMd2HtmlConverterIndex: number;
   selectedMd2HtmlConverter: Md2HtmlConverterData;
+
+  savingNews = false;
 
   @ViewChild('contentTextarea', { read: ElementRef })
   private _contentTextareaElementRef: ElementRef<HTMLElement> | null;
@@ -110,6 +118,7 @@ export class NewsEditorPageComponent {
   constructor(
     private _domSanitizer: DomSanitizer,
     private _changeDetectionRef: ChangeDetectorRef,
+    private _snackBar: MatSnackBar,
   ) {
     this.selectMd2HtmlConverter(0);
   }
@@ -142,6 +151,7 @@ export class NewsEditorPageComponent {
   }
 
   private _setContentPreview(content: string) {
+    this.rawContentPreview = content;
     this.contentPreview = this._domSanitizer.bypassSecurityTrustHtml(content);
   }
 
@@ -173,6 +183,33 @@ export class NewsEditorPageComponent {
     const request: Md2HtmlConverterRequest['data'] = content;
 
     worker.postMessage(request);
+  }
+
+  async createNews() {
+    if (!this.title) return;
+
+    this.savingNews = true;
+    this._snackBar.open('ニュースを作成しています', 'OK');
+
+    try {
+      console.log('???');
+
+      await apolloClient.mutate({
+        mutation: CreateNewsDocument,
+        variables: {
+          userId: '2',
+          html: this.rawContentPreview,
+          markdown: this.content,
+          title: this.title,
+        },
+      });
+
+      this._snackBar.open('ニュースを作成しました', 'OK');
+    } catch {
+      this._snackBar.open('ニュースの作成に失敗しました', 'OK');
+    }
+
+    this.savingNews = false;
   }
 
   /** スクロールを共有する */

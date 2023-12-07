@@ -1,0 +1,32 @@
+schema:
+    - graphql/shared/*.gql
+    - src/**/*.schema.gql
+documents:
+    - src/**/*.gql
+    - src/**/*.graphql
+    - src/**/!*.schema.gql
+    - src/**/!*.schema.graphql
+generates:
+    src/graphql/schema.d.ts:
+        plugins:
+            - typescript # https://www.graphql-code-generator.com/plugins/typescript
+        config:
+            mitOperationSuffix: true # 接尾語を省略するかどうか
+    src/graphql/:
+        preset: near-operation-file # https://www.graphql-code-generator.com/plugins/near-operation-file-preset
+        presetConfig:
+            extension: .ts
+            baseTypesPath: schema.d.ts
+        plugins:
+            - add:
+                content: '/* eslint-disable import/no-named-as-default, @typescript-eslint/no-unused-vars */'
+            - typescript-operations # https://www.graphql-code-generator.com/plugins/typescript-operations
+            - typescript-apollo-angular
+        config:
+            mitOperationSuffix: true # 接尾語を省略するかどうか
+            clientPath: "@/apollo"
+hooks:
+    afterOneFileWrite:
+        - eslint --fix
+        - prettier --write
+overwrite: true

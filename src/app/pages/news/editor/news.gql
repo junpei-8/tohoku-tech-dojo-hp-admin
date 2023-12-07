@@ -1,0 +1,18 @@
+mutation createNews(
+  $title: String!
+  $html: String!
+  $markdown: String!
+  $userId: ID!
+) {
+  createNews(
+    input: {
+      title: $title
+      html: $html
+      markdown: $markdown
+      userID: $userId
+      tagIDs: []
+    }
+  ) {
+    id
+  }
+}

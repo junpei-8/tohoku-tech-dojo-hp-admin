@@ -157,6 +157,10 @@
   resize: none;
   font-size: 16px;
   line-height: 1.6;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: flex-end;
+  margin: 4px 4px 0;
 }
